@@ -37,11 +37,6 @@ func (app *App) Include_Permissions(name string, place_code string) error {
 			err := fmt.Errorf("parent distrubutor has not the permissions")
 			return err
 		}
-		_, exist := distributor.Parent.IncludeRegions[place_code]
-		if exist {
-			fmt.Println("added permissions to ", name)
-			return nil
-		}
 	}
 
 	_, exist = distributor.ExcludeRegions[place_code]
@@ -64,14 +59,6 @@ func (app *App) Exclude_Permissions(name, place_code string) error {
 	if !app.Places.Place_Exist(place_code) {
 		err := fmt.Errorf("invalid place code: %v", place_code)
 		return err
-	}
-
-	if d.Parent != nil {
-		_, exist = d.Parent.ExcludeRegions[place_code]
-		if exist {
-			fmt.Println("added exclude permissions to ", name)
-			return nil
-		}
 	}
 
 	_, exist = d.IncludeRegions[place_code]
@@ -122,26 +109,14 @@ func (app *App) Get_Permissions(name string) error {
 		return err
 	}
 
-	has_parent := dist.Parent != nil
-
 	fmt.Println("INCLUDE")
 	for k := range dist.IncludeRegions {
 		app.Places.Get_Name_From_Codes(k)
-	}
-	if has_parent {
-		for k := range dist.Parent.IncludeRegions {
-			app.Places.Get_Name_From_Codes(k)
-		}
 	}
 	fmt.Println("==============================")
 	fmt.Println("EXCLUDE")
 	for k := range dist.ExcludeRegions {
 		app.Places.Get_Name_From_Codes(k)
-	}
-	if has_parent {
-		for k := range dist.Parent.ExcludeRegions {
-			app.Places.Get_Name_From_Codes(k)
-		}
 	}
 	return nil
 }
